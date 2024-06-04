@@ -1,0 +1,21 @@
+Примерна транзакция
+
+START TRANSACTION;
+
+-- Пример за транзакция: Вмъкване на нов мач и съответния резултат
+INSERT INTO Matches (match_date, home_team_id, away_team_id) VALUES ('2024-06-04', 1, 3);
+SET @new_match_id = LAST_INSERT_ID();
+INSERT INTO MatchResults (match_id, home_team_score, away_team_score) VALUES (@new_match_id, 85, 88);
+
+COMMIT;
+------------------------------------------------------------------------
+Индекси
+
+-- Създаване на прост индекс
+CREATE INDEX idx_team_name ON Teams(team_name);
+
+-- Създаване на съставен индекс
+CREATE INDEX idx_player_team ON Players(team_id, player_name);
+
+-- Създаване на префиксен индекс (приемаме, че имаме големи текстови полета)
+CREATE INDEX idx_player_name_prefix ON Players(player_name(10));

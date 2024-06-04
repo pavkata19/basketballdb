@@ -1,0 +1,60 @@
+Роли
+
+-- Създаване на потребители и присвояване на привилегии
+CREATE USER 'admin_user'@'localhost' IDENTIFIED BY 'password';
+CREATE USER 'manager_user'@'localhost' IDENTIFIED BY 'password';
+CREATE USER 'viewer_user'@'localhost' IDENTIFIED BY 'password';
+
+-- Даване на привилегии на ниво база данни за admin_user
+GRANT ALL PRIVILEGES ON BasketballLeague.* TO 'admin_user'@'localhost';
+
+-- Даване на привилегии на ниво таблица за manager_user
+GRANT SELECT, INSERT, UPDATE, DELETE ON BasketballLeague.Players TO 'manager_user'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON BasketballLeague.PlayerStats TO 'manager_user'@'localhost';
+
+-- Даване на привилегии на ниво колона за viewer_user
+GRANT SELECT (player_name, position) ON BasketballLeague.Players TO 'viewer_user'@'localhost';
+
+-- Прилагане на промените
+FLUSH PRIVILEGES;
+*-----------------------------------------------------------------------------------
+Изглед
+-- Изглед за всички мачове и техните резултати
+CREATE VIEW MatchDetails AS
+SELECT 
+    m.match_id,
+    m.match_date,
+    ht.team_name AS home_team,
+    at.team_name AS away_team,
+    mr.home_team_score,
+    mr.away_team_score
+FROM Matches m
+JOIN Teams ht ON m.home_team_id = ht.team_id
+JOIN Teams at ON m.away_team_id = at.team_id
+JOIN MatchResults mr ON m.match_id = mr.match_id;
+
+-- Изглед за статистиката на играчите по мачове
+CREATE VIEW PlayerMatchStats AS
+SELECT 
+    p.player_name,
+    t.team_name,
+    m.match_date,
+    ps.points_scored,
+    ps.assists,
+    ps.rebounds
+FROM PlayerStats ps
+JOIN Players p ON ps.player_id = p.player_id
+JOIN Teams t ON p.team_id = t.team_id
+JOIN Matches m ON ps.match_id = m.match_id;
+
+-- Изглед за топ играчи по точки
+CREATE VIEW TopScorers AS
+SELECT 
+    p.player_name,
+    t.team_name,
+    SUM(ps.points_scored) AS total_points
+FROM PlayerStats ps
+JOIN Players p ON ps.player_id = p.player_id
+JOIN Teams t ON p.team_id = t.team_id
+GROUP BY p.player_name, t.team_name
+ORDER BY total_points DESC;

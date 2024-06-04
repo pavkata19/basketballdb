@@ -1,0 +1,137 @@
+Създаване на таблиците 
+
+-- Създаване на базата данни
+CREATE DATABASE BasketballLeague;
+USE BasketballLeague;
+
+-- Таблица за отборите
+CREATE TABLE Teams (
+    team_id INT AUTO_INCREMENT PRIMARY KEY,
+    team_name VARCHAR(100) NOT NULL,
+    coach_name VARCHAR(100) NOT NULL
+);
+
+-- Таблица за играчите
+CREATE TABLE Players (
+    player_id INT AUTO_INCREMENT PRIMARY KEY,
+    team_id INT,
+    player_name VARCHAR(100) NOT NULL,
+    position VARCHAR(50),
+    FOREIGN KEY (team_id) REFERENCES Teams(team_id)
+);
+
+-- Таблица за мачовете
+CREATE TABLE Matches (
+    match_id INT AUTO_INCREMENT PRIMARY KEY,
+    match_date DATE NOT NULL,
+    home_team_id INT,
+    away_team_id INT,
+    FOREIGN KEY (home_team_id) REFERENCES Teams(team_id),
+    FOREIGN KEY (away_team_id) REFERENCES Teams(team_id)
+);
+
+-- Таблица за резултатите от мачовете
+CREATE TABLE MatchResults (
+    result_id INT AUTO_INCREMENT PRIMARY KEY,
+    match_id INT,
+    home_team_score INT NOT NULL,
+    away_team_score INT NOT NULL,
+    FOREIGN KEY (match_id) REFERENCES Matches(match_id)
+);
+
+-- Таблица за статистиката на играчите
+CREATE TABLE PlayerStats (
+    stat_id INT AUTO_INCREMENT PRIMARY KEY,
+    player_id INT,
+    match_id INT,
+    points_scored INT,
+    assists INT,
+    rebounds INT,
+    FOREIGN KEY (player_id) REFERENCES Players(player_id),
+    FOREIGN KEY (match_id) REFERENCES Matches(match_id)
+);
+
+-- Вмъкване на данни за отборите
+INSERT INTO Teams (team_name, coach_name) VALUES
+('Team A', 'Coach A'),
+('Team B', 'Coach B'),
+('Team C', 'Coach C'),
+('Team D', 'Coach D'),
+('Team E', 'Coach E'),
+('Team F', 'Coach F'),
+('Team G', 'Coach G'),
+('Team H', 'Coach H'),
+('Team I', 'Coach I'),
+('Team J', 'Coach J');
+
+-- Вмъкване на данни за играчите
+INSERT INTO Players (team_id, player_name, position) VALUES
+(1, 'Player 1', 'Guard'),
+(1, 'Player 2', 'Forward'),
+(1, 'Player 3', 'Center'),
+(2, 'Player 4', 'Guard'),
+(2, 'Player 5', 'Forward'),
+(3, 'Player 6', 'Center'),
+(3, 'Player 7', 'Guard'),
+(4, 'Player 8', 'Forward'),
+(4, 'Player 9', 'Center'),
+(5, 'Player 10', 'Guard'),
+(5, 'Player 11', 'Forward'),
+(6, 'Player 12', 'Center'),
+(6, 'Player 13', 'Guard'),
+(7, 'Player 14', 'Forward'),
+(7, 'Player 15', 'Center'),
+(8, 'Player 16', 'Guard'),
+(8, 'Player 17', 'Forward'),
+(9, 'Player 18', 'Center'),
+(9, 'Player 19', 'Guard'),
+(10, 'Player 20', 'Forward');
+
+-- Вмъкване на данни за мачовете
+INSERT INTO Matches (match_date, home_team_id, away_team_id) VALUES
+('2024-06-01', 1, 2),
+('2024-06-02', 2, 3),
+('2024-06-03', 3, 1),
+('2024-06-04', 4, 5),
+('2024-06-05', 5, 6),
+('2024-06-06', 6, 7),
+('2024-06-07', 7, 8),
+('2024-06-08', 8, 9),
+('2024-06-09', 9, 10),
+('2024-06-10', 10, 1);
+
+-- Вмъкване на данни за резултатите от мачовете
+INSERT INTO MatchResults (match_id, home_team_score, away_team_score) VALUES
+(1, 100, 95),
+(2, 80, 85),
+(3, 90, 92),
+(4, 110, 105),
+(5, 75, 70),
+(6, 95, 90),
+(7, 85, 88),
+(8, 100, 102),
+(9, 77, 80),
+(10, 90, 95);
+
+-- Вмъкване на данни за статистиката на играчите
+INSERT INTO PlayerStats (player_id, match_id, points_scored, assists, rebounds) VALUES
+(1, 1, 30, 5, 8),
+(2, 1, 25, 7, 6),
+(3, 1, 20, 10, 12),
+(4, 2, 15, 3, 5),
+(5, 2, 28, 4, 7),
+(6, 2, 22, 6, 9),
+(7, 3, 18, 8, 11),
+(8, 3, 24, 5, 6),
+(9, 3, 19, 7, 8),
+(10, 4, 29, 6, 10),
+(11, 4, 21, 9, 12),
+(12, 4, 25, 4, 8),
+(13, 5, 26, 5, 7),
+(14, 5, 23, 6, 9),
+(15, 5, 27, 8, 11),
+(16, 6, 30, 7, 10),
+(17, 6, 20, 9, 11),
+(18, 6, 22, 5, 8),
+(19, 7, 18, 8, 12),
+(20, 7, 24, 5, 9);
