@@ -1,0 +1,51 @@
+-- Insert тригер before
+DELIMITER //
+CREATE TRIGGER before_player_insert
+BEFORE INSERT ON Players
+FOR EACH ROW
+BEGIN
+    IF NEW.player_name = '' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Player name cannot be empty';
+    END IF;
+END;
+//
+DELIMITER ;
+
+-- Insert тригер after
+DELIMITER //
+CREATE TRIGGER after_player_insert
+AFTER INSERT ON Players
+FOR EACH ROW
+BEGIN
+    INSERT INTO PlayerStats (player_id, match_id, points_scored, assists, rebounds)
+    VALUES (NEW.player_id, NULL, 0, 0, 0);
+END;
+//
+DELIMITER ;
+
+-- Update тригер before
+DELIMITER //
+CREATE TRIGGER before_match_update
+BEFORE UPDATE ON Matches
+FOR EACH ROW
+BEGIN
+    IF NEW.home_team_id = NEW.away_team_id THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Home team and away team cannot be the same';
+    END IF;
+END;
+//
+DELIMITER ;
+
+-- Update тригер after
+DELIMITER //
+CREATE TRIGGER after_match_update
+AFTER UPDATE ON Matches
+FOR EACH ROW
+BEGIN
+    -- Example: Log the update (assuming a logging table exists)
+    -- INSERT INTO MatchUpdatesLog (match_id, update_time) VALUES (NEW.match_id, NOW());
+END;
+//
+DELIMITER ;
