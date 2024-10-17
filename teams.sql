@@ -1,1 +1,1 @@
-SELECT * FROM basketballleague.teams;
+basketballleague.teams;
