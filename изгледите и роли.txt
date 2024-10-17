@@ -17,11 +17,7 @@ GRANT SELECT (player_name, position) ON BasketballLeague.Players TO 'viewer_user
 
 -- Прилагане на промените
 FLUSH PRIVILEGES;
-*-----------------------------------------------------------------------------------
-Изглед
--- Изглед за всички мачове и техните резултати
-CREATE VIEW MatchDetails AS
-SELECT 
+*-----------------------------------------------
     m.match_id,
     m.match_date,
     ht.team_name AS home_team,
